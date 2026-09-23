@@ -1,98 +1,117 @@
+"""Practice basic dictionary operations with a student record."""
+
 student = {
     "name": "Alice Wong",
     "student_id": "ST1024",
     "age": 21,
     "program": "Software Engineering",
     "city": "Nanjing",
-    "gpa": 3.6
+    "gpa": 3.6,
 }
 
 
-# First, display the complete record using for loop, printing and some string formatting only
+def average_and_status(courses):
+    total = 0
+    count = 0
+    for score in courses.values():
+        total += score
+        count += 1
+    average = total / count if count else 0
+    if average >= 90:
+        status = "Excellent"
+    elif average >= 75:
+        status = "Good"
+    elif average >= 60:
+        status = "Pass"
+    else:
+        status = "At Risk"
+    return average, status
 
 
-
-# Check if there's a key called 'email'. If not, ask the user to enter an email
-
-
-
-# Ask the user to enter a new city, and update the existing city with this new one
-# Make sure the new city is not an empty string
+def find_course(courses, name):
+    for course in courses:
+        if course.casefold() == name.strip().casefold():
+            return course
+    return None
 
 
+def main():
+    print("Current student record")
+    for key, value in student.items():
+        print(f"{key}: {value}")
 
-# Check if there's 'phone' key in the dictionary. If not, print a message saying "Phone number not found."
-# Use the get() method
+    if "email" not in student:
+        student["email"] = input("Enter email: ").strip()
+
+    new_city = input("Enter new city: ").strip()
+    while not new_city:
+        new_city = input("City cannot be empty. Enter new city: ").strip()
+    student["city"] = new_city
+
+    if student.get("phone") is None:
+        print("Phone number not found.")
+        student["phone"] = input("Enter phone number: ").strip()
+
+    student["contact"] = {
+        "phone": student["phone"],
+        "email": student["email"],
+    }
+    student["courses"] = {
+        "Python": 88,
+        "Databases": 91,
+        "Software Engineering": 84,
+    }
+    student["average_score"], student["academic_status"] = average_and_status(
+        student["courses"]
+    )
+
+    query = input("Search for a course: ")
+    course = find_course(student["courses"], query)
+    if course is None:
+        print("Course not found")
+    else:
+        print(f"{course}: {student['courses'][course]}")
+
+    query = input("Enter the course to update: ")
+    course = find_course(student["courses"], query)
+    if course is None:
+        print("Course not found")
+    else:
+        while True:
+            raw_score = input("Enter the new score (0-100): ").strip()
+            try:
+                score = float(raw_score)
+            except ValueError:
+                print("Enter a number between 0 and 100.")
+                continue
+            if 0 <= score <= 100:
+                break
+            print("Enter a number between 0 and 100.")
+        student["courses"][course] = int(score) if score.is_integer() else score
+        print(f"{course} updated to {student['courses'][course]}.")
+
+    student["average_score"], student["academic_status"] = average_and_status(
+        student["courses"]
+    )
+    print("\n=====================================")
+    print("        STUDENT RECORD")
+    print("=====================================")
+    print(f"Name: {student['name']}")
+    print(f"Student ID: {student['student_id']}")
+    print(f"Age: {student['age']}")
+    print(f"Program: {student['program']}")
+    print(f"City: {student['city']}")
+    print(f"GPA: {student['gpa']}")
+    print("\nCONTACT")
+    print(f"Phone: {student['contact']['phone']}")
+    print(f"Email: {student['contact']['email']}")
+    print("\nCOURSE RESULTS")
+    for course, score in student["courses"].items():
+        print(f"{course}: {score}")
+    print(f"\nAverage Score: {student['average_score']:.1f}")
+    print(f"Academic Status: {student['academic_status']}")
+    print("=====================================")
 
 
-
-# Add a new key called 'contact' to the dictionary, which is itself a dictionary containing two keys: 'phone' and 'email'.
-
-
-
-
-# Add another key called 'courses' to the dictionary, which is itself a dictionary containing three keys: 'Python', 'Databases', and 'Software Engineering', with 88, 91, and 84 as their corresponding scores
-
-
-
-# Calculate the average score for the student without built-in functions like sum(). Use a for loop instead. 
-
-
-
-# Add a new key called 'academic_status' to the dictionary
-# It should be a string that indicates the student's academic status based on the average score. 
-# If the score is >= 90, the status should be "Excellent".
-# If the score is >= 75, the status should be "Good".
-# If the score is >= 60, the status should be "Pass".
-# If the score is < 60, the status should be "At Risk".
-
-
-
-
-# Add the logic to search for a course. 
-# If the course is found, print the course name and score. If not, print "Course not found".
-
-
-
-
-# Add the logic to update a course score. 
-# Ask the user to enter the course name and the new score. 
-# If the course is found, then update the score and print a message indicating the change.
-# While adding the new course, make sure the new score is a number between 0 and 100
-
-
-
-
-# Recaclculate the average score and update the academic status after the course score has been updated.
-
-
-
-
-# Display the final formatted student record with all the updated information, including the average score and academic status.
-# It should look like the following: 
-""" 
-=====================================
-        STUDENT RECORD
-=====================================
-
-Name: Alice Wong
-Student ID: ST1024
-Age: 21
-Program: Software Engineering
-City: Shanghai
-GPA: 3.6
-
-CONTACT
-Phone: 13800001111
-Email: alice.wong@university.edu
-
-COURSE RESULTS
-Python: 88
-Databases: 91
-Software Engineering: 84
-
-Average Score: 87.7
-Academic Status: Good
-
-===================================== """
-
+if __name__ == "__main__":
+    main()
